@@ -10,7 +10,7 @@
 #include "lib_hw1/round.h"
 #include "tokenize.h"
 
-struct my_head
+struct my_head  // ALL Created Use This!
 {
 	struct list_elem main;
 	char *name;
@@ -41,8 +41,8 @@ void CreateHandler(struct list *L, char **toked, int tokin){
 		"hashtable", 	// 1
 		"bitmap"		// 2
 	};
-	struct my_head *new = (struct my_head *)calloc(1, sizeof(struct my_head));
-	void *data;
+	struct my_head *new = (
+			struct my_head *)calloc(1, sizeof(struct my_head));
 	int name_size = 10;
 	int choice;
 	
@@ -53,31 +53,26 @@ void CreateHandler(struct list *L, char **toked, int tokin){
 
 	switch(choice){
 		case 0:  // list
-			data = (void *)calloc(1, sizeof(struct my_list));
-			list_init((struct list *)data);
-
-			strcpy(new->name, toked[2]);
-			new->data = data;
-
+			new->data = (void *)calloc(1, sizeof(struct my_list));
+			list_init((struct list *)new->data);
+			sprintf(new->name, "%s", toked[2]);
 			list_push_back(L, &(new->main));
 			break;
 		case 1:  // hashtable
-			data = (void *)calloc(1, sizeof(struct hash));
-			hash_init((struct hash *)data,
+			new->data = (void *)calloc(1, sizeof(struct hash));
+			hash_init((struct hash *)new->data,
 					hash_int, NULL, NULL);
-
-			strcpy(new->name, toked[2]);
-			new->data = data;
-
+			sprintf(new->name, "%s", toked[2]);
 			list_push_back(L, &(new->main));
 			break;
 		case 2:  // bitmap
-			if(tokin<4)
+			if(tokin<4){
 				//if(_MY_DEBUG)
 					printf("UNSUPPORTED COMMAND!\n");
-			data = (void *)bitmap_create(atoi(toked[3]));
-			strcpy(new->name, toked[2]);
-			new->data = data;
+					break;
+			}
+			new->data = (void *)bitmap_create(atoi(toked[3]));
+			sprintf(new->name, "%s", toked[2]);
 			list_push_back(L, &(new->main));
 			break;
 		case -1:
@@ -92,9 +87,50 @@ void CreateHandler(struct list *L, char **toked, int tokin){
 
 
 void lCommandsHandler(char **toked){
-	int rule_size = 1;
+	int rule_size = 42;
 	char *rule[] = {
-		"asdf"      // 0
+		"list_insert",	// 0
+		"list_splice",	// 1
+		"list_push",	// 2
+		"list_push_front",	// 3
+		"list_push_back",	// 4
+		"list_remove",	// 5
+		"list_pop_front",	// 6
+		"list_pop_back",	// 7
+		"list_front",	// 8
+		"list_back",	// 9
+		"list_size",	// 10
+		"list_empty",	// 11
+		"list_reverse",	// 12
+		"list_sort",	// 13
+		"list_insert_ordered",	// 14
+		"list_unique",	// 15
+		"list_max",	// 16
+		"list_min",	// 17
+		"hash_insert",	// 18
+		"hash_replace",	// 19
+		"hash_find",	// 20
+		"hash_delete",	// 21
+		"hash_clear",	// 22
+		"hash_size",	// 23
+		"hash_empty",	// 24
+		"hash_apply",	// 25
+		"bitmap_size",	// 26
+		"bitmap_set",	// 27
+		"bitmap_mark",	// 28
+		"bitmap_reset",	// 29
+		"bitmap_flip",	// 30
+		"bitmap_test",	// 31
+		"bitmap_set_all",	// 32
+		"bitmap_set_multiple",	// 33
+		"bitmap_count",	// 34
+		"bitmap_contains",	// 35
+		"bitmap_any",	// 36
+		"bitmap_none",	// 37
+		"bitmap_all",	// 38
+		"bitmap_scan",	// 39
+		"bitmap_scan_and_flip",	// 40
+		"bitmap_dump"	// 41
 	};
 	switch(StringSwitch(&rule, rule_size, toked[0])){
 		case 0:  // 

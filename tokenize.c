@@ -3,18 +3,19 @@
 #include <string.h>
 
 #define _MY_DEBUG 0
+#define TOKEN_SIZE 5
+#define RULE_SIZE 4
 
 int ValidateTokenKey(char s){
-	char token[5] = {
+	char token[TOKEN_SIZE] = {
 		(char)' ',
 		(char)'\n',
 		(char)'\t',
 		(char)EOF,
 		(char)NULL
 	};
-	int token_size = 5;
 	int idx;
-	for(idx=0;idx<token_size;idx++)
+	for(idx=0;idx<TOKEN_SIZE;idx++)
 		if(s == token[idx])
 			return 1;
 	return 0;
@@ -68,8 +69,7 @@ int StringSwitch(char* list[], int cases, char *string){
 
 int InputHandler(struct list *L){
 	// Handle Rules!
-	int rule_size = 4;
-	char *rule[] = {
+	char *rule[RULE_SIZE] = {
 		"create",   // 0
 		"delete",   // 1
 		"dumpdata", // 2
@@ -104,7 +104,7 @@ int InputHandler(struct list *L){
 		toked[i] = NULL;
 
 	// 4. Handle Commands
-	switch(StringSwitch(&rule, rule_size, toked[0])){
+	switch(StringSwitch(&rule, RULE_SIZE, toked[0])){
 		case 0:  // create
 			CreateHandler(L, toked, cnt);
 			break;
