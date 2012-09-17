@@ -1,17 +1,17 @@
-build: main.o bitmap.o hash.o list.o
-	gcc -o a.out bitmap.o hash.o list.o main.o
+ARGS:= -g
 
-main.o:
-	gcc -o main.o -c main.c
+build: bitmap.o hash.o list.o
+	gcc $(ARGS) -o main.o -c main.c
+	gcc $(ARGS) -o a.out bitmap.o hash.o list.o main.o
 
 bitmap.o:
-	gcc -o bitmap.o -c lib_hw1/bitmap.c
+	gcc $(ARGS) -o bitmap.o -c lib_hw1/bitmap.c
 
 hash.o:
-	gcc -o hash.o -c lib_hw1/hash.c
+	gcc $(ARGS) -o hash.o -c lib_hw1/hash.c
 
 list.o:
-	gcc -o list.o -c lib_hw1/list.c
+	gcc $(ARGS) -o list.o -c lib_hw1/list.c
 
 clean:
 	rm -rf os_hw1_tester/Score.txt
