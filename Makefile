@@ -1,4 +1,4 @@
-build: bitmap.o hash.o list.o
+build: main.o bitmap.o hash.o list.o
 	gcc -o a.out bitmap.o hash.o list.o main.o
 
 main.o:
@@ -15,5 +15,5 @@ list.o:
 
 clean:
 	rm -rf os_hw1_tester/Score.txt
-	rm -rf bitmap.o hash.o list.o
+	rm -rf main.o bitmap.o hash.o list.o
 	rm -rf a.out
