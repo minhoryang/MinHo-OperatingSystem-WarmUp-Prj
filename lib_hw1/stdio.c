@@ -6,9 +6,9 @@
    then the corresponding ASCII characters are also rendered
    alongside. */   
 void
-hex_dump (uintptr_t ofs, const void *buf_, size_t size, bool ascii)
+hex_dump (uintptr_t ofs, const void *buf__, size_t size, bool ascii)
 {
-  const uint8_t *buf = buf_;
+  const uint8_t *buf = buf__;
   const size_t per_line = 16; /* Maximum bytes per line. */
 
   while (size > 0)

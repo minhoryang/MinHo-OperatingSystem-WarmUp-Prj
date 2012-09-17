@@ -1,6 +1,6 @@
 #include "list.h"
 #include <assert.h>	// Instead of	#include "../debug.h"
-#define ASSERT(CONDITION) assert(CONDITION)	// patched for hw1
+#define ASSERT(CONDITION) assert(CONDITION)	// patched for proj0-2
 
 /* Our doubly linked lists have two header elements: the "head"
    just before the first element and the "tail" just after the

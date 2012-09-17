@@ -9,7 +9,7 @@
 #endif
 
 #include "stdio.c"	// 'hex_dump' : defined in stdio.c(org:pintos/src/lib/)
-#define ASSERT(CONDITION) assert(CONDITION)	// patched for hw1
+#define ASSERT(CONDITION) assert(CONDITION)	// patched for proj0-2
 
 /* Element type.
 
