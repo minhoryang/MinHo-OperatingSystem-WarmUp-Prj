@@ -10,6 +10,8 @@
 #include "lib_hw1/round.h"
 #include "tokenize.h"
 
+struct my_head *SearchHandler(struct list *L, char *name);
+
 struct my_head  // ALL Created Use This!
 {
 	struct list_elem main;
@@ -49,7 +51,7 @@ void CreateHandler(struct list *L, char **toked, int tokin){
 	new->name = (char *)calloc(name_size, sizeof(char));
 
 	if(tokin<3) choice = -1;
-	else choice = StringSwitch(&rule, rule_size, toked[1]);
+	else		choice = StringSwitch(&rule, rule_size, toked[1]);
 
 	switch(choice){
 		case 0:  // list
@@ -85,10 +87,52 @@ void CreateHandler(struct list *L, char **toked, int tokin){
 	}
 }
 
+void DeleteHandler(struct list *L, char **toked, int tokin){
+	struct my_head *target;
+	int type;
+
+	if(tokin<2) type = -1;
+	else		type = TypeHandler(target = SearchHandler(L, toked[1]));
+
+	switch(type){
+		case 0:  // list
+			break;
+		case 1:  // hashtable
+			break;
+		case 2:  // bitmap
+			break;
+		case -1:
+		default:
+			//if(_MY_DEBUG)
+				printf("UNSUPPORTED COMMAND!\n");
+			break;
+	}
+
+	return ;
+}
+
+int TypeHandler(struct my_head *target){
+	return -1;
+}
+
+struct my_head *SearchHandler(struct list *L, char *name){
+	struct my_head *chk;
+	struct list_elem *find;
+	for(find = list_begin(L); find != list_end(L); find = list_next(find)){
+		chk = list_entry(find, struct my_head, main);  	// Get <struct my_head>* by <my_head>.<main>'s location(<find>).
+		//if(_MY_DEBUG)
+			printf("find: '%s' vs '%s'\n", chk->name, name);
+		if(!strcmp(chk->name, name))
+			break;
+	}
+	return chk;
+}
+
+
 
 void lCommandsHandler(char **toked){
 	int rule_size = 42;
-	char *rule[] = {
+	char *rule[] = {  // WTF!!!! WHY U NO USE ENUM!!!!!!!
 		"list_insert",	// 0
 		"list_splice",	// 1
 		"list_push",	// 2
@@ -142,8 +186,9 @@ void lCommandsHandler(char **toked){
 	}
 }
 
-void TrashAll(struct list *list){
-	free(list);
+void TrashAll(struct list *L){
+	// Recursively delete all.
+	free(L);
 }
 
 int main(){
