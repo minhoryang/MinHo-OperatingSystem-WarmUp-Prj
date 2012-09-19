@@ -16,7 +16,21 @@ hash.o:
 list.o:
 	gcc $(ARGS) -o list.o -c lib_hw1/list.c
 
+test: build
+	@mkdir test
+	@cp os_hw1_tester/* test/
+	@cp a.out test/
+	@cp Makefile test/
+	make -C test/ test_run
+
+test_run:
+	./hw1_tester.sh ./a.out
+
+testclean:
+	@rm -rf test
+
 clean:
-	rm -rf os_hw1_tester/Score.txt
-	rm -rf main.o bitmap.o hash.o list.o tokenize.o
-	rm -rf a.out
+	@rm -rf os_hw1_tester/Score.txt
+	@rm -rf main.o bitmap.o hash.o list.o tokenize.o
+	@rm -rf a.out
+	@rm -rf test

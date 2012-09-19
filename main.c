@@ -9,6 +9,7 @@
 #include "lib_hw1/list.h"
 #include "lib_hw1/round.h"
 #include "tokenize.h"
+#include "main.h"
 
 struct my_head *SearchHandler(struct list *L, char *name);
 
@@ -103,7 +104,7 @@ void DeleteHandler(struct list *L, char **toked, int tokin){
 			break;
 		case -1:
 		default:
-			//if(_MY_DEBUG)
+			if(_MY_DEBUG)
 				printf("UNSUPPORTED COMMAND!\n");
 			break;
 	}
@@ -120,7 +121,7 @@ struct my_head *SearchHandler(struct list *L, char *name){
 	struct list_elem *find;
 	for(find = list_begin(L); find != list_end(L); find = list_next(find)){
 		chk = list_entry(find, struct my_head, main);  	// Get <struct my_head>* by <my_head>.<main>'s location(<find>).
-		//if(_MY_DEBUG)
+		if(_MY_DEBUG)
 			printf("find: '%s' vs '%s'\n", chk->name, name);
 		if(!strcmp(chk->name, name))
 			break;

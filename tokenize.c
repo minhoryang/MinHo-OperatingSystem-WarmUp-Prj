@@ -3,8 +3,8 @@
 #include <string.h>
 
 #include "lib_hw1/list.h"
+#include "main.h"
 
-#define _MY_DEBUG 0
 #define TOKEN_SIZE 5
 
 int ValidateTokenKey(char s){
