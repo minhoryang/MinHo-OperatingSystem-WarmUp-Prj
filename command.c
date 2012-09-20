@@ -67,16 +67,17 @@ int InputHandler(struct list *L){
 void lCommandsHandler(struct list *L, char **toked, int tokin){
 	int rule_size = 42;
 	char *rule[] = {  // WTF!!!! WHY U NO USE ENUM!!!!!!!
-		"list_insert",	// 0 (work..
+		"list_insert",	// 0 (ok)
 		"list_splice",	// 1
-		"list_push",	// 2
-		"list_push_front",	// 3
-		"list_push_back",	// 4
-		"list_remove",	// 5
+		"list_push",	// 2 (not found)
+		   // ref> http://dcclab.sogang.ac.kr/dcc2/xe/?mid=under_os_2012f&document_srl=40265
+		"list_push_front",	// 3 (ok)
+		"list_push_back",	// 4 (ok)
+		"list_remove",	// 5 (ok)
 		"list_pop_front",	// 6
 		"list_pop_back",	// 7
 		"list_front",	// 8
-		"list_back",	// 9
+		"list_back",	// 9 
 		"list_size",	// 10
 		"list_empty",	// 11
 		"list_reverse",	// 12
@@ -114,6 +115,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 	int type;
 	struct my_list *cur_list;
 	struct my_list *new_list;
+	struct list_elem *find;
 
 	if(tokin<2) type = -1;
 	else		type = (target = SearchHandler(L, toked[1]))->type;
@@ -121,14 +123,40 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 	switch(StringSwitch(&rule, rule_size, toked[0])){
 		case 0:  // list_insert
 			if(tokin<4 || type==0){
+				// <!-- FIND -th Object.
 				cur_list = list_entry(
 						(((struct list *)(target->data))->head).next,
 						struct my_list, main);
 				for(type=0; type < atoi(toked[2]); type++)
 					cur_list = list_entry((cur_list->main).next, struct my_list, main);
+				// -->
 				new_list = (struct my_list *)calloc(1, sizeof(struct my_list));
 				new_list->number = atoi(toked[3]);
 				list_insert(cur_list, &(new_list->main));
+			}
+			break;
+		case 3:  // list_push_front
+			if(tokin<3 || type==0){
+				new_list = (struct my_list *)calloc(1, sizeof(struct my_list));
+				new_list->number = atoi(toked[2]);
+				list_push_front((struct list *)target->data, &(new_list->main));
+			}
+			break;
+		case 4:  // list_push_back
+			if(tokin<3 || type==0){
+				new_list = (struct my_list *)calloc(1, sizeof(struct my_list));
+				new_list->number = atoi(toked[2]);
+				list_push_back((struct list *)target->data, &(new_list->main));
+			}
+			break;
+		case 5:  // list_remove
+			if(tokin<3 || type==0){
+				cur_list = list_entry(
+						(((struct list *)(target->data))->head).next,
+						struct my_list, main);
+				for(type=0; type < atoi(toked[2]); type++)
+					cur_list = list_entry((cur_list->main).next, struct my_list, main);
+				list_remove(cur_list);
 			}
 			break;
 		case 26:  // bitmap_size

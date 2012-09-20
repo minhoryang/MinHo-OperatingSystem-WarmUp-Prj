@@ -103,6 +103,7 @@ void DumpHandler(struct list *L, char **toked, int tokin){
 		case 0:
 			str = (char *)calloc(str_size, sizeof(char));
 			list = (struct list *)(target->data);
+			// <!-- FIND by looping.
 			for(find = list_begin(list);  // ELEM CONTROL
 				find != list_end(list);
 				find = list_next(find)){
@@ -110,6 +111,7 @@ void DumpHandler(struct list *L, char **toked, int tokin){
 					str_now += sprintf(str + str_now, "%d ", my_list->number);
 					type = 1;  // reuse this as flag.
 			}
+			// -->
 			if(type) str_now += sprintf(str + str_now, "\n");
 			printf("%s", str);
 			break;
