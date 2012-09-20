@@ -26,9 +26,8 @@ struct my_head  // ALL Created Use This!
 
 struct my_list
 {
-	struct list_elem prev;
+	struct list_elem main;
 	int number;
-	struct list_elem next;
 };
 
 // from lib_hw1/bitmap.c

@@ -67,7 +67,7 @@ int InputHandler(struct list *L){
 void lCommandsHandler(struct list *L, char **toked, int tokin){
 	int rule_size = 42;
 	char *rule[] = {  // WTF!!!! WHY U NO USE ENUM!!!!!!!
-		"list_insert",	// 0
+		"list_insert",	// 0 (work..
 		"list_splice",	// 1
 		"list_push",	// 2
 		"list_push_front",	// 3
@@ -108,16 +108,28 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 		"bitmap_all",	// 38 (ok)
 		"bitmap_scan",	// 39 (ok)
 		"bitmap_scan_and_flip",	// 40 (ok)
-		"bitmap_dump"	// 41 (work...)
+		"bitmap_dump"	// 41 (ok)
 	};
 	struct my_head *target;
 	int type;
+	struct my_list *cur_list;
+	struct my_list *new_list;
 
 	if(tokin<2) type = -1;
 	else		type = (target = SearchHandler(L, toked[1]))->type;
 
 	switch(StringSwitch(&rule, rule_size, toked[0])){
-		case 0:  // 
+		case 0:  // list_insert
+			if(tokin<4 || type==0){
+				cur_list = list_entry(
+						(((struct list *)(target->data))->head).next,
+						struct my_list, main);
+				for(type=0; type < atoi(toked[2]); type++)
+					cur_list = list_entry((cur_list->main).next, struct my_list, main);
+				new_list = (struct my_list *)calloc(1, sizeof(struct my_list));
+				new_list->number = atoi(toked[3]);
+				list_insert(cur_list, &(new_list->main));
+			}
 			break;
 		case 26:  // bitmap_size
 			if(tokin<2 || type==2)
