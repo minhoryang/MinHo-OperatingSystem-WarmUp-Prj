@@ -159,3 +159,13 @@ int main(){
 	TrashAll(L);
 	return 0;
 }
+
+// NEW!
+bool my_list_less_func (const struct list_elem *a,
+						const struct list_elem *b,
+                        void *aux){
+	struct my_list *my_a = list_entry(a, struct my_list, main);
+	struct my_list *my_b = list_entry(b, struct my_list, main);
+	if(my_a->number < my_b->number) return true;
+	else return false;
+}

@@ -74,18 +74,18 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 		"list_push_front",	// 3 (ok)
 		"list_push_back",	// 4 (ok)
 		"list_remove",	// 5 (ok)
-		"list_pop_front",	// 6
-		"list_pop_back",	// 7
-		"list_front",	// 8
-		"list_back",	// 9 
-		"list_size",	// 10
-		"list_empty",	// 11
+		"list_pop_front",	// 6 (ok)
+		"list_pop_back",	// 7 (ok)
+		"list_front",	// 8 (ok)
+		"list_back",	// 9 (ok)
+		"list_size",	// 10 (work...
+		"list_empty",	// 11 (work...
 		"list_reverse",	// 12
 		"list_sort",	// 13
 		"list_insert_ordered",	// 14
 		"list_unique",	// 15
-		"list_max",	// 16
-		"list_min",	// 17
+		"list_max",	// 16 (work...
+		"list_min",	// 17 (work...
 		"hash_insert",	// 18
 		"hash_replace",	// 19
 		"hash_find",	// 20
@@ -155,9 +155,59 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 						(((struct list *)(target->data))->head).next,
 						struct my_list, main);
 				for(type=0; type < atoi(toked[2]); type++)
-					cur_list = list_entry((cur_list->main).next, struct my_list, main);
+					cur_list = list_entry(
+							(cur_list->main).next,
+							struct my_list,
+							main);
 				list_remove(cur_list);
 			}
+			break;
+		case 6:  // list_pop_front
+			if(tokin<2 || type==0)
+				list_pop_front((struct list*)(target->data));
+			break;
+		case 7:  // list_pop_back
+			if(tokin<2 || type==0)
+				list_pop_back((struct list*)(target->data));
+			break;
+		case 8:  // list_front
+			if(tokin<2 || type==0)
+				printf("%d\n", list_entry(
+									list_front((struct list*)(target->data)),
+									struct my_list, main)->number);
+			break;
+		case 9:  // list_back
+			if(tokin<2 || type==0)
+				printf("%d\n", list_entry(
+									list_back((struct list*)(target->data)),
+									struct my_list, main)->number);
+			break;
+		case 10:  // list_size
+			if(tokin<1 || type==0)
+				printf("%u\n", list_size((struct list*)(target->data)));
+			break;
+		case 11:  // list_empty
+			if(tokin<1 || type==0)
+				printf("%s\n", (
+					list_empty((struct list*)(target->data))
+					) ? "true" : "false"
+				);
+			break;
+		case 16:  // list_max
+			if(tokin<1 || type==0)
+				printf("%d\n", list_entry(
+							list_max((struct list*)(target->data),
+								my_list_less_func, NULL),
+							struct my_list, main)->number
+				);
+			break;
+		case 17:  // list_min
+			if(tokin<1 || type==0)
+				printf("%d\n", list_entry(
+							list_min((struct list*)(target->data),
+								my_list_less_func, NULL),
+							struct my_list, main)->number
+				);
 			break;
 		case 26:  // bitmap_size
 			if(tokin<2 || type==2)

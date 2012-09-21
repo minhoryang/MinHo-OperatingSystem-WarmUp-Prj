@@ -19,7 +19,7 @@ struct my_head  // ALL Created Use This!
 	char *name;
 	int type;  // WHY U NO HAVE type_of();?!
 	void *data;
-	// 0. list : (struct my_list);
+	// 0. list : (struct list);
 	// 1. hashtable : (struct hash);
 	// 2. bitmap : (struct bitmap);
 };
@@ -44,6 +44,9 @@ void DeleteHandler(struct list *L, char **toked, int tokin);
 void DumpHandler(struct list *L, char **toked, int tokin);
 struct my_head *SearchHandler(struct list *L, char *name);
 void TrashAll(struct list *L);
+bool my_list_less_func (const struct list_elem *a,
+						const struct list_elem *b,
+                        void *aux);
 
 // command.c
 int InputHandler(struct list *L);
