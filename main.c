@@ -166,6 +166,7 @@ bool my_list_less_func (const struct list_elem *a,
                         void *aux){
 	struct my_list *my_a = list_entry(a, struct my_list, main);
 	struct my_list *my_b = list_entry(b, struct my_list, main);
+	if(0) printf("%x\n", (void *)aux);  // set as used.
 	if(my_a->number < my_b->number) return true;
 	else return false;
 }

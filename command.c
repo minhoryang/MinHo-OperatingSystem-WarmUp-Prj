@@ -83,7 +83,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 		"list_reverse",	// 12 (ok
 		"list_sort",	// 13 (ok)
 		"list_insert_ordered",	// 14 (ok)
-		"list_unique",	// 15
+		"list_unique",	// 15 (ok)
 		"list_max",	// 16 (ok)
 		"list_min",	// 17 (ok)
 		"hash_insert",	// 18
@@ -111,20 +111,17 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 		"bitmap_scan_and_flip",	// 40 (ok)
 		"bitmap_dump"	// 41 (ok)
 	};
-	struct my_head *target;
+	struct my_head *target, *duplicates;
 	int type;
-	struct my_list *cur_list;
-	struct my_list *new_list;
-	struct list_elem *find;
+	struct my_list *cur_list, *new_list;
+	struct list_elem *find, *first, *last;
 
-	struct list_elem *before, *first, *last;
-
-	if(tokin<2) type = -1;
+	if(tokin==1) type = -1;
 	else		type = (target = SearchHandler(L, toked[1]))->type;
 
 	switch(StringSwitch(&rule, rule_size, toked[0])){
 		case 0:  // list_insert
-			if(tokin<4 || type==0){
+			if(tokin==3 || type==0){
 				// <!-- FIND -th Object.
 				cur_list = list_entry(
 						(((struct list *)(target->data))->head).next,
@@ -140,7 +137,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 		case 1:  // list_splice
 			if(tokin<6 || type==0){
 				find = (  // before
-					((struct list *)(SearchHandler(L, toked[1])->data))->head).next;
+					((struct list *)(target->data))->head).next;
 				for(type=0; type < atoi(toked[2]); type++)
 					find = find->next;
 				first = (last = (
@@ -154,21 +151,21 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 			break;
 		//case 2:
 		case 3:  // list_push_front
-			if(tokin<3 || type==0){
+			if(tokin==2 || type==0){
 				new_list = (struct my_list *)calloc(1, sizeof(struct my_list));
 				new_list->number = atoi(toked[2]);
 				list_push_front((struct list *)target->data, &(new_list->main));
 			}
 			break;
 		case 4:  // list_push_back
-			if(tokin<3 || type==0){
+			if(tokin==2 || type==0){
 				new_list = (struct my_list *)calloc(1, sizeof(struct my_list));
 				new_list->number = atoi(toked[2]);
 				list_push_back((struct list *)target->data, &(new_list->main));
 			}
 			break;
 		case 5:  // list_remove
-			if(tokin<3 || type==0){
+			if(tokin==2 || type==0){
 				cur_list = list_entry(
 						(((struct list *)(target->data))->head).next,
 						struct my_list, main);
@@ -181,45 +178,45 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 			}
 			break;
 		case 6:  // list_pop_front
-			if(tokin<2 || type==0)
+			if(tokin==1 || type==0)
 				list_pop_front((struct list*)(target->data) );
 			break;
 		case 7:  // list_pop_back
-			if(tokin<2 || type==0)
+			if(tokin==1 || type==0)
 				list_pop_back((struct list*)(target->data) );
 			break;
 		case 8:  // list_front
-			if(tokin<2 || type==0)
+			if(tokin==1 || type==0)
 				printf("%d\n", list_entry(
 									list_front((struct list*)(target->data)),
 									struct my_list, main)->number );
 			break;
 		case 9:  // list_back
-			if(tokin<2 || type==0)
+			if(tokin==1 || type==0)
 				printf("%d\n", list_entry(
 									list_back((struct list*)(target->data)),
 									struct my_list, main)->number );
 			break;
 		case 10:  // list_size
-			if(tokin<1 || type==0)
+			if(tokin==0 || type==0)
 				printf("%u\n", list_size((struct list*)(target->data)) );
 			break;
 		case 11:  // list_empty
-			if(tokin<1 || type==0)
+			if(tokin==0 || type==0)
 				printf("%s\n", (
 					list_empty((struct list*)(target->data))
 					) ? "true" : "false" );
 			break;
 		case 12:  // list_reverse
-			if(tokin<1 || type==0)
+			if(tokin==0 || type==0)
 				list_reverse((struct list*)(target->data));
 			break;
 		case 13:  // list_sort
-			if(tokin<1 || type==0)
+			if(tokin==0 || type==0)
 				list_sort((struct list*)(target->data), my_list_less_func, NULL);
 			break;
 		case 14:  // list_insert_ordered
-			if(tokin<3 || type==0){
+			if(tokin==2 || type==0){
 				new_list = (struct my_list *)calloc(1, sizeof(struct my_list));
 				new_list->number = atoi(toked[2]);
 				list_insert_ordered(
@@ -229,52 +226,69 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 						NULL);
 			}
 			break;
+		case 15:  // list_unique
+			if(tokin<4 || type==0){
+				if(tokin==2)
+					list_unique(
+						(struct list*)(target->data),
+						(struct list*)NULL,
+						my_list_less_func,
+						NULL);
+				else if(((duplicates = SearchHandler(L, toked[2]))->type)==0)
+					list_unique(
+						(struct list*)(target->data),
+						(struct list*)(duplicates->data),
+						my_list_less_func,
+						NULL);
+				//else break;
+			}
+			break;
 		case 16:  // list_max
-			if(tokin<1 || type==0)
+			if(tokin==0 || type==0)
 				printf("%d\n", list_entry(
 							list_max((struct list*)(target->data),
 								my_list_less_func, NULL),
 							struct my_list, main)->number );
 			break;
 		case 17:  // list_min
-			if(tokin<1 || type==0)
+			if(tokin==0 || type==0)
 				printf("%d\n", list_entry(
 							list_min((struct list*)(target->data),
 								my_list_less_func, NULL),
 							struct my_list, main)->number );
 			break;
 		case 26:  // bitmap_size
-			if(tokin<2 || type==2)
+			if(tokin==1 || type==2)
 				printf("%d\n",
 					bitmap_size((struct bitmap *)target->data) );
 			break;
 		case 27:  // bitmap_set
-			if(tokin<4 || type==2)
+			if(tokin==3 || type==2)
 				bitmap_set(
 					(struct bitmap *)target->data,
 					atoi(toked[2]),
 					!strcmp(toked[3], "true") ? 1 : 0 );
 			break;
 		case 28:  // bitmap_mark
-			if(tokin<3 || type==2)
+			if(tokin==2 || type==2)
 				bitmap_mark(
 					(struct bitmap *)target->data,
 					atoi(toked[2]) );
 			break;
 		case 29:  // bitmap_reset
-			if(tokin<3 || type==2)
+			if(tokin==2 || type==2)
 				bitmap_reset(
 					(struct bitmap *)target->data,
 					atoi(toked[2]) );
 			break;
 		case 30:  // bitmap_flip
-			if(tokin<3 || type==2)
+			if(tokin==2 || type==2)
 				bitmap_flip(
 					(struct bitmap *)target->data,
 					atoi(toked[2]) );
 			break;
 		case 31:  // bitmap_test
-			if(tokin<3 || type==2)
+			if(tokin==2 || type==2)
 				printf("%s\n",
 					bitmap_test(
 						(struct bitmap *)target->data,
@@ -282,13 +296,13 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 					) ? "true" : "false" );
 			break;
 		case 32:  // bitmap_set_all
-			if(tokin<3 || type==2)
+			if(tokin==2 || type==2)
 				bitmap_set_all(
 					(struct bitmap *)target->data,
 					!strcmp(toked[2], "true") ? 1 : 0 );
 			break;
 		case 33:  // bitmap_set_multiple
-			if(tokin<5 || type==2)
+			if(tokin==4 || type==2)
 				bitmap_set_multiple(
 					(struct bitmap *)target->data,
 					atoi(toked[2]),
@@ -296,7 +310,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 					!strcmp(toked[4], "true") ? 1 : 0 );
 			break;
 		case 34:  // bitmap_count
-			if(tokin<5 || type==2)
+			if(tokin==4 || type==2)
 				printf("%d\n",
 					bitmap_count(
 						(struct bitmap *)target->data,
@@ -305,7 +319,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 						!strcmp(toked[4], "true") ? 1 : 0)	);
 			break;
 		case 35:  // bitmap_contains
-			if(tokin<5 || type==2)
+			if(tokin==4 || type==2)
 				printf("%s\n",
 					bitmap_contains(
 						(struct bitmap *)target->data,
@@ -315,7 +329,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 					) ? "true" : "false" );
 			break;
 		case 36:  // bitmap_any
-			if(tokin<4 || type==2)
+			if(tokin==3 || type==2)
 				printf("%s\n",
 					bitmap_any(
 						(struct bitmap *)target->data,
@@ -324,7 +338,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 					) ? "true" : "false" );
 			break;
 		case 37:  // bitmap_none
-			if(tokin<4 || type==2)
+			if(tokin==3 || type==2)
 				printf("%s\n",
 					bitmap_none(
 						(struct bitmap *)target->data,
@@ -333,7 +347,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 					) ? "true" : "false" );
 			break;
 		case 38:  // bitmap_all
-			if(tokin<4 || type==2)
+			if(tokin==3 || type==2)
 				printf("%s\n",
 					bitmap_all(
 						(struct bitmap *)target->data,
@@ -342,7 +356,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 					) ? "true" : "false" );
 			break;
 		case 39:  // bitmap_scan
-			if(tokin<5 || type==2)
+			if(tokin==4 || type==2)
 				printf("%u\n",
 					bitmap_scan(
 						(struct bitmap *)target->data,
@@ -351,7 +365,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 						!strcmp(toked[4], "true") ? 1 : 0) );
 			break;
 		case 40:  // bitmap_scan_and_flip
-			if(tokin<5 || type==2)
+			if(tokin==4 || type==2)
 				printf("%u\n",
 					bitmap_scan_and_flip(
 						(struct bitmap *)target->data,
@@ -360,7 +374,7 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 						!strcmp(toked[4], "true") ? 1 : 0) );
 			break;
 		case 41:  // bitmap_dump
-			if(tokin<2 || type==2)
+			if(tokin==1 || type==2)
 				bitmap_dump((struct bitmap *)target->data);
 			break;
 		case -1:
