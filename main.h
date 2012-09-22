@@ -2,6 +2,7 @@
   #define _MY_DEBUG 0
 #endif
 
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,20 +37,33 @@ struct my_hash
 	int number;
 };
 
-// copied from lib_hw1/bitmap.c
-typedef unsigned long elem_type;
-struct bitmap
-{
-    size_t bit_cnt;     /* Number of bits. */
-    elem_type *bits;    /* Elements that represent bits. */
-};
+// -- copied from lib_hw1/bitmap.c
+	typedef unsigned long elem_type;
+	struct bitmap
+	{
+	    size_t bit_cnt;     /* Number of bits. */
+	    elem_type *bits;    /* Elements that represent bits. */
+	};
+// --
 
-// main.c
+// basic_handler.c
 void CreateHandler(struct list *L, char **toked, int tokin);
 void DeleteHandler(struct list *L, char **toked, int tokin);
 void DumpHandler(struct list *L, char **toked, int tokin);
 struct my_head *SearchHandler(struct list *L, char *name);
-void TrashAll(struct list *L);
+void TrashAllHandler(struct list *L);
+
+// input_handler.c
+bool InputHandler(struct list *L);
+void lCommandsHandler(struct list *L, char **toked, int tokin);
+hash_action_func *MyHashActionsHandler(char *toked);
+
+// tokenize.c
+bool ValidateTokenKey(char s);
+char *Tokenize(char **str, int *str_size);
+int StringSwitch(char* list[], int cases, char *string);
+
+// my_funcs.c
 bool my_list_less_func (const struct list_elem *a,
 						const struct list_elem *b,
                         void *aux);
@@ -61,13 +75,3 @@ bool my_hash_less_func (
 void my_hash_action_func_destructor (struct hash_elem *e, void *aux);
 void my_hash_action_func_square (struct hash_elem *e, void *aux);
 void my_hash_action_func_triple (struct hash_elem *e, void *aux);
-
-// command.c
-bool InputHandler(struct list *L);
-void lCommandsHandler(struct list *L, char **toked, int tokin);
-hash_action_func *MyHashActionsHandler(char *toked);
-
-// tokenize.c
-bool ValidateTokenKey(char s);
-char *Tokenize(char **str, int *str_size);
-int StringSwitch(char* list[], int cases, char *string);

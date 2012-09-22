@@ -1,11 +1,10 @@
 /**
-	@file	command.c
+	@file	input_handler.c
 	@date	2012-09-22
 	@author	"양민호, 20091631, minhoryang@gmail.com"
 	@brief	"모든 Commands를 라이브러리와 연결해주는 InputHandler를 포함."
 */
 #include "main.h"
-
 
 /**
 	@brief
@@ -262,7 +261,6 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 						(struct list*)(duplicates->data),
 						my_list_less_func,
 						NULL);
-				//else break;
 			}
 			break;
 		case 16:  // list_max
@@ -300,8 +298,10 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 				new_hash = (struct my_hash *)calloc(1, sizeof(struct my_hash));
 				new_hash->number = atoi(toked[2]);
 				if(_MY_DEBUG) printf("new: %x\n", (unsigned)new_hash);
-				cur_hash = hash_find((struct hash *)(target->data), &(new_hash->main));
+				cur_hash = hash_find((struct hash *)(target->data),
+						&(new_hash->main));
 				if(cur_hash) printf("%d\n", cur_hash->number);
+				free(new_hash);
 			}
 			break;
 		case 21:  // hash_delete
@@ -310,32 +310,29 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 				new_hash->number = atoi(toked[2]);
 				if(_MY_DEBUG) printf("new: %x\n", (unsigned)new_hash);
 				hash_delete((struct hash *)(target->data), &(new_hash->main));
+				free(new_hash);
 			}
 			break;
 		case 22:  // hash_clear
-			if(tokin==2 && type==1){
+			if(tokin==2 && type==1)
 				hash_clear(
-						(struct hash *)(target->data),
-						my_hash_action_func_destructor);
-			}
+					(struct hash *)(target->data),
+					my_hash_action_func_destructor);
 			break;
 		case 23:  // hash_size
-			if(tokin==2 && type==1){
+			if(tokin==2 && type==1)
 				printf("%u\n", hash_size((struct hash *)(target->data)));
-			}
 			break;
 		case 24:  // hash_empty
-			if(tokin==2 && type==1){
-				printf("%s\n",
-						hash_empty((struct hash *)(target->data))?"true":"false");
-			}
+			if(tokin==2 && type==1)
+				printf("%s\n", hash_empty(
+						(struct hash *)(target->data))?"true":"false");
 			break;
 		case 25:  // hash_apply
-			if(tokin==3 && type==1){
+			if(tokin==3 && type==1)
 				hash_apply(
 					(struct hash *)(target->data),
 					MyHashActionsHandler(toked[2]));
-			}
 			break;
 		case 26:  // bitmap_size
 			if(tokin==2 && type==2)
@@ -464,6 +461,12 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 	}
 }
 
+/**
+	@brief
+		"Hash_Action명령의 Action을 요청에 따라 제공."
+	@return
+		"요청에 해당하는 hash_action_func."
+*/
 hash_action_func *MyHashActionsHandler(char *toked){
 	int rule_size = 2;
 	char *rule[2] = {
