@@ -159,16 +159,15 @@ void DumpHandler(
 		case 1:
 			str = (char *)calloc(str_size, sizeof(char));
 			hash = (struct hash *)target->data;
-			if(hash->elem_cnt){
-				hash_first(&hi, hash);
-				while(hash_next(&hi)){
-					my_hash = hash_entry(hash_cur(&hi), struct my_hash, main);
-					str_now += sprintf(str + str_now, "%d ", my_hash->number);
-					type = 1;  // reuse this as flag.
-				}
-				if(type) str_now += sprintf(str + str_now, "\n");
-				printf("%s", str);
+			hash_first(&hi, hash);
+			while(hash_next(&hi)){
+				my_hash = hash_entry(hash_cur(&hi), struct my_hash, main);
+				if(_MY_DEBUG) printf("found: %x\n", my_hash);
+				str_now += sprintf(str + str_now, "%d ", my_hash->number);
+				type = 0;  // reuse this as flag.
 			}
+			if(!type) str_now += sprintf(str + str_now, "\n");
+			printf("%s", str);
 			free(str);
 			break;
 		case 2:
