@@ -107,12 +107,12 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 		"list_min",	// 17 (ok)
 		"hash_insert",	// 18 (ok)
 		"hash_replace",	// 19 (ok)
-		"hash_find",	// 20 (work...)
-		"hash_delete",	// 21
-		"hash_clear",	// 22
-		"hash_size",	// 23
-		"hash_empty",	// 24
-		"hash_apply",	// 25
+		"hash_find",	// 20 (ok)
+		"hash_delete",	// 21 (ok)
+		"hash_clear",	// 22 (ok)
+		"hash_size",	// 23 (ok)
+		"hash_empty",	// 24 (ok)
+		"hash_apply",	// 25 (ok)
 		"bitmap_size",	// 26 (ok)
 		"bitmap_set",	// 27 (ok)
 		"bitmap_mark",	// 28 (ok)
@@ -304,6 +304,39 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 				if(cur_hash) printf("%d\n", cur_hash->number);
 			}
 			break;
+		case 21:  // hash_delete
+			if(tokin==3 && type==1){
+				new_hash = (struct my_hash *)calloc(1, sizeof(struct my_hash));
+				new_hash->number = atoi(toked[2]);
+				if(_MY_DEBUG) printf("new: %x\n", (unsigned)new_hash);
+				hash_delete((struct hash *)(target->data), &(new_hash->main));
+			}
+			break;
+		case 22:  // hash_clear
+			if(tokin==2 && type==1){
+				hash_clear(
+						(struct hash *)(target->data),
+						my_hash_action_func_destructor);
+			}
+			break;
+		case 23:  // hash_size
+			if(tokin==2 && type==1){
+				printf("%u\n", hash_size((struct hash *)(target->data)));
+			}
+			break;
+		case 24:  // hash_empty
+			if(tokin==2 && type==1){
+				printf("%s\n",
+						hash_empty((struct hash *)(target->data))?"true":"false");
+			}
+			break;
+		case 25:  // hash_apply
+			if(tokin==3 && type==1){
+				hash_apply(
+					(struct hash *)(target->data),
+					MyHashActionsHandler(toked[2]));
+			}
+			break;
 		case 26:  // bitmap_size
 			if(tokin==2 && type==2)
 				printf("%d\n",
@@ -428,5 +461,21 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 		default:
 			if(_MY_DEBUG)
 				printf("UNSUPPORTED COMMAND!\n");
+	}
+}
+
+hash_action_func *MyHashActionsHandler(char *toked){
+	int rule_size = 2;
+	char *rule[2] = {
+		"square",   // 0
+		"triple"   // 1
+	};
+	switch(StringSwitch(&rule, rule_size, toked)){
+		case 0:
+			return my_hash_action_func_square;
+		case 1:
+			return my_hash_action_func_triple;
+		default:
+			return NULL;
 	}
 }

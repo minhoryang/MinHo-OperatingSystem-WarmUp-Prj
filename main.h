@@ -58,10 +58,14 @@ bool my_hash_less_func (
 		const struct hash_elem *a,
 		const struct hash_elem *b,
 		void *aux);
+void my_hash_action_func_destructor (struct hash_elem *e, void *aux);
+void my_hash_action_func_square (struct hash_elem *e, void *aux);
+void my_hash_action_func_triple (struct hash_elem *e, void *aux);
 
 // command.c
 bool InputHandler(struct list *L);
 void lCommandsHandler(struct list *L, char **toked, int tokin);
+hash_action_func *MyHashActionsHandler(char *toked);
 
 // tokenize.c
 bool ValidateTokenKey(char s);

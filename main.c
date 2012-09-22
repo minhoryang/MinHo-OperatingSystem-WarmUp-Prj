@@ -268,3 +268,30 @@ bool my_hash_less_func (
 	if(my_a->number < my_b->number) return true;
 	else return false;
 }
+
+void my_hash_action_func_destructor (
+		struct hash_elem *e,
+		void *aux
+		){
+	struct my_hash *my_hash = hash_entry(e, struct my_hash, main);
+	free(my_hash);
+	return ;
+}
+
+void my_hash_action_func_square (
+		struct hash_elem *e,
+		void *aux
+		){
+	struct my_hash *my_hash = hash_entry(e, struct my_hash, main);
+	my_hash->number = my_hash->number * my_hash->number;
+	return ;
+}
+
+void my_hash_action_func_triple (
+		struct hash_elem *e,
+		void *aux
+		){
+	struct my_hash *my_hash = hash_entry(e, struct my_hash, main);
+	my_hash->number = my_hash->number * my_hash->number * my_hash->number;
+	return ;
+}
