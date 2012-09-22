@@ -75,3 +75,6 @@ bool my_hash_less_func (
 void my_hash_action_func_destructor (struct hash_elem *e, void *aux);
 void my_hash_action_func_square (struct hash_elem *e, void *aux);
 void my_hash_action_func_triple (struct hash_elem *e, void *aux);
+void my_list_swap(struct list_elem *a, struct list_elem *b);
+void my_list_shuffle(struct list *L);
+void my_bitmap_expand(struct bitmap *bitmap, int size);

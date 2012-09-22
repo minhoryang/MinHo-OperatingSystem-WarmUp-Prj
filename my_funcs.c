@@ -113,3 +113,54 @@ void my_hash_action_func_triple (
 	my_hash->number = my_hash->number * my_hash->number * my_hash->number;
 	return ;
 }
+
+/**
+	@brief
+		"My_List_Swap, List의 특정 원소 둘을 Swap한다."
+	@remarks
+		"List의 특정 원소 둘을 Swap한다. 단순히 가장 쉽게 값을 바꾸었다."
+*/
+void my_list_swap(struct list_elem *a, struct list_elem *b){
+	struct my_list *my_a = list_entry(a, struct my_list, main);
+	struct my_list *my_b = list_entry(b, struct my_list, main);
+	int t = my_a->number;
+	my_a->number = my_b->number;
+	my_b->number = t;
+	return ;
+}
+
+/**
+	@brief
+		"My_List_Swap, List의 특정 원소 둘을 Swap한다."
+	@remarks
+		"List의 특정 원소 둘을 Swap한다. 단순히 가장 쉽게 값을 바꾸었다."
+*/
+void my_list_shuffle(struct list *L){
+	struct list_elem *e, *r;
+	size_t total = list_size(L), randnow = 0;
+	for (e = list_begin (L); e != list_end (L); e = list_next (e)){
+		randnow = rand() % total;
+		for (r = list_begin (L); r != list_end (L); r = list_next (r))
+			if (!(randnow--))
+				my_list_swap(e, r);
+	}
+	return ;
+}
+
+/**
+	@brief
+		"My_Bitmap_Expand, Bitmap의 크기를 키운다."
+	@remarks
+		"Bitmap을 Realloc으로 크기를 키우고 사이즈에 기록한다."
+*/
+void my_bitmap_expand(struct bitmap *bitmap, int size){
+	if(bitmap->bit_cnt < size){
+		bitmap->bit_cnt = size;
+		bitmap->bits = realloc(
+				bitmap->bits,
+				sizeof(elem_type) * DIV_ROUND_UP(size,
+					(sizeof(elem_type) * CHAR_BIT)
+				));
+	}
+	return ;
+}

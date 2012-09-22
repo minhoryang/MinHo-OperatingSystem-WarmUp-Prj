@@ -2,7 +2,7 @@
 	@file	main.c
 	@date	2012-09-22
 	@author	"양민호, 20091631, minhoryang@gmail.com"
-	@brief	"."
+	@brief	"Pintos Data Structure Analysis를 위한 CLI."
 */
 #include "main.h"
 

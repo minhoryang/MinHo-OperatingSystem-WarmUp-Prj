@@ -90,11 +90,19 @@ void DeleteHandler(
 
 	switch(type){
 		case 0:  // list
+			free(target->name);
+			//free(target);
 			break;
 		case 1:  // hashtable
+			hash_clear(
+				(struct hash *)(target->data),
+				my_hash_action_func_destructor);
+			free(target->name);
+			//free(target);
 			break;
 		case 2:  // bitmap
 			bitmap_destroy((struct bitmap *)target->data);
+			free(target->name);
 			free(target);
 			break;
 		case -1:
@@ -217,7 +225,13 @@ struct my_head *SearchHandler(
 	@warning
 */
 void TrashAllHandler(struct list *L){
-	// Recursively delete all.
+	// Recursively delete all.	
+	struct list_elem *find;
+	struct my_head *chk;
+	for(find = list_begin(L); find != list_end(L); find = list_next(find)){
+		chk = list_entry(find, struct my_head, main);
+		;;
+	}
 	free(L);
 }
 
