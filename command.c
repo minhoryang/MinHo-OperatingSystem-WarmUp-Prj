@@ -1,7 +1,24 @@
+/**
+	@file	command.c
+	@date	2012-09-22
+	@author	"양민호, 20091631, minhoryang@gmail.com"
+	@brief	"모든 Commands를 라이브러리와 연결해주는 InputHandler를 포함."
+*/
 #include "main.h"
 
-int InputHandler(struct list *L){
-	// Handle Rules!
+
+/**
+	@brief
+		"들어온 Input을 처리."
+	@remarks
+		"Tokenize를 통한 Input을 룰에 따라 처리한다."
+	@return
+		"QUIT일때만 1, 나머지는 0. (잘못된 Input이라도 0을 리턴한다.)"
+*/
+bool InputHandler(
+		struct list *L	///< "메인자료구조."
+		){
+	///< "정의된 룰!"
 	int rule_size = 4;
 	char *rule[4] = {
 		"create",   // 0
@@ -9,25 +26,21 @@ int InputHandler(struct list *L){
 		"dumpdata", // 2
 		"quit"      // 3
 	};
-	// Buffers
+	///< ".Buffers"
 	int str_size = 100;
-	char *str;
-	// Pointers
-	char *now, **toked;
-	// Indexes
-	int i, cnt = 0, ret = 0;
+	char *str = (char *)calloc(str_size, sizeof(char)); 
+	///< ".Pointers"
+	char *now, **toked = (char **)calloc(str_size, sizeof(char *)); 
+	///< ".Indexes"
+	int i, cnt = 0;
+	bool ret = false;
 
-
-	// 1. Allocate
-	str = (char *)calloc(str_size, sizeof(char)); 
-	toked = (char **)calloc(str_size, sizeof(char *)); 
 	
-	// 2. Read
 	fgets(str, str_size, stdin);
 	if(_MY_DEBUG)
 		printf("%s", str);
 	
-	// 3. Tokenizing
+	///< "Tokenizing : 들어온 문자열을 나눠서 toked[]에 저장."
 	now=str;
 	while(toked[cnt] = Tokenize(&now, &str_size)){
 		if(_MY_DEBUG)
@@ -37,7 +50,7 @@ int InputHandler(struct list *L){
 	for(i=cnt;i<str_size;i++)
 		toked[i] = NULL;
 
-	// 4. Handle Commands
+	///< "정의된 룰에 따라 핸드러를 할당."
 	switch(StringSwitch(&rule, rule_size, toked[0])){
 		case 0:  // create
 			CreateHandler(L, toked, cnt);
@@ -49,13 +62,12 @@ int InputHandler(struct list *L){
 			DumpHandler(L, toked, cnt);
 			break;
 		case 3:  // quit
-			return 1;
-		case -1:  // * (commands)
+			return true;
+		case -1:  ///< "나머지 모든 추가정의된 룰 핸들러."
 			lCommandsHandler(L, toked, cnt);
 			break;
 	}
 
-	// 5. Free
 	for(i=0;i<cnt;i++){
 		free(toked[i]);
 	}
@@ -64,13 +76,20 @@ int InputHandler(struct list *L){
 	return ret;
 }
 
+/**
+	@brief
+		"추가정의된 룰을 처리."
+	@remarks
+		"자료구조별 함수를 처리. (ex/ list_insert, ...)."
+*/
 void lCommandsHandler(struct list *L, char **toked, int tokin){
 	int rule_size = 42;
 	char *rule[] = {  // WTF!!!! WHY U NO USE ENUM!!!!!!!
 		"list_insert",	// 0 (ok)
 		"list_splice",	// 1 (ok)
 		"list_push",	// 2 (not found)
-		   // ref> http://dcclab.sogang.ac.kr/dcc2/xe/?mid=under_os_2012f&document_srl=40265
+		   // ref> http://dcclab.sogang.ac.kr/dcc2/xe/
+		   //       ?mid=under_os_2012f&document_srl=40265
 		"list_push_front",	// 3 (ok)
 		"list_push_back",	// 4 (ok)
 		"list_remove",	// 5 (ok)
@@ -111,8 +130,9 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 		"bitmap_scan_and_flip",	// 40 (ok)
 		"bitmap_dump"	// 41 (ok)
 	};
-	struct my_head *target, *duplicates;
-	int type;
+	struct my_head *target;  // GLOBAL toked[1]
+	int type;  // GLOBAL type of FoundOne.
+	struct my_head *duplicates;
 	struct my_list *cur_list, *new_list;
 	struct list_elem *find, *first, *last;
 
@@ -127,7 +147,8 @@ void lCommandsHandler(struct list *L, char **toked, int tokin){
 						(((struct list *)(target->data))->head).next,
 						struct my_list, main);
 				for(type=0; type < atoi(toked[2]); type++)
-					cur_list = list_entry((cur_list->main).next, struct my_list, main);
+					cur_list = list_entry(
+							(cur_list->main).next, struct my_list, main);
 				// -->
 				new_list = (struct my_list *)calloc(1, sizeof(struct my_list));
 				new_list->number = atoi(toked[3]);

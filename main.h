@@ -49,10 +49,10 @@ bool my_list_less_func (const struct list_elem *a,
                         void *aux);
 
 // command.c
-int InputHandler(struct list *L);
+bool InputHandler(struct list *L);
 void lCommandsHandler(struct list *L, char **toked, int tokin);
 
 // tokenize.c
-int ValidateTokenKey(char s);
+bool ValidateTokenKey(char s);
 char *Tokenize(char **str, int *str_size);
 int StringSwitch(char* list[], int cases, char *string);

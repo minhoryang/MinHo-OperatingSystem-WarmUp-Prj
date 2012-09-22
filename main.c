@@ -1,6 +1,22 @@
+/**
+	@file	main.c
+	@date	2012-09-22
+	@author	"양민호, 20091631, minhoryang@gmail.com"
+	@brief	"Main()포함 Create/Delete/Dump 핸들러를 포함."
+*/
 #include "main.h"
 
-void CreateHandler(struct list *L, char **toked, int tokin){
+/**
+	@brief
+		"요구되는 자료구조를 생성Create한다."
+	@remarks
+		"List와 Hashtable, Bitmap을 메인자료구조에 붙여준다."
+*/
+void CreateHandler(
+		struct list *L,  ///< "메인자료구조."
+		char **toked,  ///< "Tokenize된 User의 Input Array."
+		int tokin  ///< "Tokenize된 User의 Input 갯수."
+		){
 	int rule_size = 3;
 	char *rule[] = {
 		"list",			// 0
@@ -54,8 +70,18 @@ void CreateHandler(struct list *L, char **toked, int tokin){
 	}
 }
 
-// NOT YET!
-void DeleteHandler(struct list *L, char **toked, int tokin){
+/**
+	@brief
+		"요구되는 자료구조를 삭제Delete한다."
+	@remarks
+		"지정된 List와 Hashtable, Bitmap을 메인자료구조에서 제거한다."
+	@warning
+*/
+void DeleteHandler(
+		struct list *L,  ///< "메인자료구조."
+		char **toked,  ///< "Tokenize된 User의 Input Array."
+		int tokin  ///< "Tokenize된 User의 Input 갯수."
+		){
 	struct my_head *target;
 	int type;
 
@@ -81,7 +107,17 @@ void DeleteHandler(struct list *L, char **toked, int tokin){
 	return ;
 }
 
-void DumpHandler(struct list *L, char **toked, int tokin){
+/**
+	@brief
+		"요구되는 자료구조를 출력Dump한다."
+	@remarks
+		"지정된 List와 Hashtable, Bitmap을 보여준다."
+*/
+void DumpHandler(
+		struct list *L,  ///< "메인자료구조."
+		char **toked,  ///< "Tokenize된 User의 Input Array."
+		int tokin  ///< "Tokenize된 User의 Input 갯수."
+		){
 	struct my_head *target;
 	struct hash *hash;
 	int type;
@@ -134,11 +170,23 @@ void DumpHandler(struct list *L, char **toked, int tokin){
 	return ;
 }
 
-struct my_head *SearchHandler(struct list *L, char *name){
+/**
+	@brief
+		"요구되는 자료구조를 검색한다."
+	@remarks
+		"지정된 List와 Hashtable, Bitmap을 메인자료구조에서 찾아준다."
+	@return
+		"찾은 자료구조."
+*/
+struct my_head *SearchHandler(
+		struct list *L,  ///< "메인자료구조."
+		char *name  ///< "찾고싶은 자료구조 이름."
+		){
 	struct my_head *chk;
 	struct list_elem *find;
 	for(find = list_begin(L); find != list_end(L); find = list_next(find)){
-		chk = list_entry(find, struct my_head, main);  	// Get <struct my_head>* by <my_head>.<main>'s location(<find>).
+		// Get <struct my_head>* by <my_head>.<main>'s location(<find>).
+		chk = list_entry(find, struct my_head, main);
 		if(_MY_DEBUG)
 			printf("find: '%s' vs '%s'\n", chk->name, name);
 		if(!strcmp(chk->name, name))
@@ -147,6 +195,11 @@ struct my_head *SearchHandler(struct list *L, char *name){
 	return chk;
 }
 
+/**
+	@brief
+		"프로그램 종료이후 모든 자료구조를 정리한다."
+	@warning
+*/
 void TrashAll(struct list *L){
 	// Recursively delete all.
 	free(L);
@@ -160,10 +213,19 @@ int main(){
 	return 0;
 }
 
-// NEW!
-bool my_list_less_func (const struct list_elem *a,
-						const struct list_elem *b,
-                        void *aux){
+/**
+	@brief
+		"List_Less_Func, List를 비교한다."
+	@remarks
+		"Define된 Function Rule에 맞게 List_Less_Func를 구현하였다."
+	@return
+		"True면 a가 더 작은거다."
+*/
+bool my_list_less_func (
+		const struct list_elem *a,
+		const struct list_elem *b,
+        void *aux
+		){
 	struct my_list *my_a = list_entry(a, struct my_list, main);
 	struct my_list *my_b = list_entry(b, struct my_list, main);
 	if(0) printf("%x\n", (void *)aux);  // set as used.
