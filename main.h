@@ -30,7 +30,13 @@ struct my_list
 	int number;
 };
 
-// from lib_hw1/bitmap.c
+struct my_hash
+{
+	struct hash_elem main;
+	int number;
+};
+
+// copied from lib_hw1/bitmap.c
 typedef unsigned long elem_type;
 struct bitmap
 {
@@ -47,6 +53,11 @@ void TrashAll(struct list *L);
 bool my_list_less_func (const struct list_elem *a,
 						const struct list_elem *b,
                         void *aux);
+unsigned my_hash_hash_func (const struct hash_elem *e, void *aux);
+bool my_hash_less_func (
+		const struct hash_elem *a,
+		const struct hash_elem *b,
+		void *aux);
 
 // command.c
 bool InputHandler(struct list *L);

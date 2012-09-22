@@ -92,7 +92,7 @@ char *Tokenize(
 	@warning
 		"warning: passing argument 1 of ‘StringSwitch’ from incompatible pointer type
 		과 note: expected ‘char **’ but argument is of type ‘char * (*)[갯수]’에러가
-		뜰거임. 근데 무시ㄱㄱ."
+		뜰거임. 근데 무시ㄱㄱ (거슬리긴함)."
 */
 int StringSwitch(
 		char* list[],  ///< "해당할거라고 예상하는 리스트,"

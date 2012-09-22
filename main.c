@@ -45,7 +45,7 @@ void CreateHandler(
 			new->data = (void *)calloc(1, sizeof(struct hash));
 			new->type = choice;
 			hash_init((struct hash *)new->data,
-					hash_int, NULL, NULL);
+					my_hash_hash_func, my_hash_less_func, NULL);
 			sprintf(new->name, "%s", toked[2]);
 			list_push_back(L, &(new->main));
 			break;
@@ -119,15 +119,19 @@ void DumpHandler(
 		int tokin  ///< "Tokenize된 User의 Input 갯수."
 		){
 	struct my_head *target;
-	struct hash *hash;
 	int type;
-	// Used for BITMAP
-	struct bitmap *bitmap;
-	size_t i;
-	// Used for list
+	// Used for <LIST>
 	struct list *list;
 	struct list_elem *find; // list
 	struct my_list *my_list; // my_list
+	// Used for <BITMAP>
+	struct bitmap *bitmap;
+	size_t i;
+	// Used for <HASHTABLE>
+	struct hash *hash;
+	struct hash_iterator hi;
+	struct my_hash *my_hash;
+	// Used for printing
 	int str_size = 100;
 	int str_now = 0;
 	char *str;
@@ -150,9 +154,22 @@ void DumpHandler(
 			// -->
 			if(type) str_now += sprintf(str + str_now, "\n");
 			printf("%s", str);
+			free(str);
 			break;
 		case 1:
+			str = (char *)calloc(str_size, sizeof(char));
 			hash = (struct hash *)target->data;
+			if(hash->elem_cnt){
+				hash_first(&hi, hash);
+				while(hash_next(&hi)){
+					my_hash = hash_entry(hash_cur(&hi), struct my_hash, main);
+					str_now += sprintf(str + str_now, "%d ", my_hash->number);
+					type = 1;  // reuse this as flag.
+				}
+				if(type) str_now += sprintf(str + str_now, "\n");
+				printf("%s", str);
+			}
+			free(str);
 			break;
 		case 2:
 			bitmap = (struct bitmap *)target->data;
@@ -228,7 +245,27 @@ bool my_list_less_func (
 		){
 	struct my_list *my_a = list_entry(a, struct my_list, main);
 	struct my_list *my_b = list_entry(b, struct my_list, main);
-	if(0) printf("%x\n", (void *)aux);  // set as used.
+	if(0) printf("%x\n", (unsigned int)aux);  // set as used.
+	if(my_a->number < my_b->number) return true;
+	else return false;
+}
+
+unsigned my_hash_hash_func (
+		const struct hash_elem *e,
+		void *aux
+		){
+	struct my_hash* wanted = hash_entry(e, struct my_hash, main);
+	if(0) printf("%x\n", (unsigned int)aux);  // set as used.
+	return hash_int(wanted->number) % 4;
+}
+
+bool my_hash_less_func (
+		const struct hash_elem *a,
+		const struct hash_elem *b,
+		void *aux){
+	struct my_hash *my_a = hash_entry(a, struct my_hash, main);
+	struct my_hash *my_b = hash_entry(b, struct my_hash, main);
+	if(0) printf("%x\n", (unsigned int)aux);  // set as used.
 	if(my_a->number < my_b->number) return true;
 	else return false;
 }
