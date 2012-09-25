@@ -78,3 +78,4 @@ void my_hash_action_func_triple (struct hash_elem *e, void *aux);
 void my_list_swap(struct list_elem *a, struct list_elem *b);
 void my_list_shuffle(struct list *L);
 void my_bitmap_expand(struct bitmap *bitmap, int size);
+unsigned my_hash_int_2(int i);

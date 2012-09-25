@@ -40,7 +40,8 @@ unsigned my_hash_hash_func (
 		){
 	struct my_hash* wanted = hash_entry(e, struct my_hash, main);
 	if(0) printf("%x\n", (unsigned int)aux);  // set as used.
-	return hash_int(wanted->number) % 4;
+	//return hash_int(wanted->number) % 4;
+	return my_hash_int_2(wanted->number) % 4;
 }
 
 
@@ -131,9 +132,9 @@ void my_list_swap(struct list_elem *a, struct list_elem *b){
 
 /**
 	@brief
-		"My_List_Swap, List의 특정 원소 둘을 Swap한다."
+		"My_List_Shuffle, 랜덤하게 List의 Shuffle한다."
 	@remarks
-		"List의 특정 원소 둘을 Swap한다. 단순히 가장 쉽게 값을 바꾸었다."
+		"랜덤함수와 my_list_swap을 이용해 랜덤하게 리스트의 원소를 섞는다."
 */
 void my_list_shuffle(struct list *L){
 	struct list_elem *e, *r;
@@ -163,4 +164,21 @@ void my_bitmap_expand(struct bitmap *bitmap, int size){
 				));
 	}
 	return ;
+}
+
+/**
+	@brief
+		"My_Hash_Int_2, Int형 데이터를 bucket에 균등분포하게 삽입하도록 Hash합니다 ."
+	@remarks
+		"."
+	@warning
+*/
+unsigned my_hash_int_2(int i){
+	unsigned hash = (unsigned)(0xffffffff) - (unsigned)(i);
+	unsigned result = 0;
+	while(hash){
+		result += hash % 10;
+		hash /= 10;
+	}
+	return result;
 }
